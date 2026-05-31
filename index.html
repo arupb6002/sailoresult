@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starting Modi Pay...</title>
+
+<style>
+@font-face{
+    font-family:'ModiPay';
+    src:url('/assets/modipay.ttf') format('truetype');
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#ffffff;
+    font-family:Arial,sans-serif;
+    overflow:hidden;
+}
+
+.container{
+    text-align:center;
+}
+
+.logo{
+    font-family:'ModiPay',sans-serif;
+    font-size:58px;
+    font-weight:bold;
+    animation:zoomIn 1s ease-out forwards;
+}
+
+.modi{
+    color:#FF7A00;
+}
+
+.pay{
+    color:#138808;
+}
+
+.tagline{
+    margin-top:5px;
+    font-size:16px;
+    font-style:italic;
+    font-weight:bold;
+    color:#444;
+}
+
+.starting{
+    margin-top:40px;
+    font-size:18px;
+    color:#666;
+    font-weight:600;
+}
+
+.countdown{
+    margin-top:10px;
+    font-size:50px;
+    font-weight:800;
+    color:#138808;
+}
+
+@keyframes zoomIn{
+    0%{
+        transform:scale(0.3);
+        opacity:0;
+    }
+    100%{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="logo">
+        <span class="modi">Modi</span><span class="pay">Pay</span>
+    </div>
+
+    <div class="tagline">
+        Pradhan Mantri Har Ghar UPI Yojna
+    </div>
+
+    <div class="starting">
+        Starting Modi Pay
+    </div>
+
+    <div class="countdown" id="countdown">
+        3
+    </div>
+
+</div>
+
+<script>
+let count = 3;
+const countdown = document.getElementById("countdown");
+
+const timer = setInterval(() => {
+    count--;
+    
+    if(count > 0){
+        countdown.textContent = count;
+    }else{
+        clearInterval(timer);
+        countdown.textContent = "✓";
+
+        setTimeout(() => {
+            window.location.href = "modipay.html";
+        }, 500);
+    }
+}, 1000);
+</script>
+
+</body>
+</html>
