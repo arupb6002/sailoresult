@@ -652,8 +652,8 @@ function processQRPayment() {
         upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(pendingQrData.merchantName)}&am=${amount}&cu=INR`;
     }
 
+    triggerUPI(upiUrl);
     closeModal('qrPaymentModal');
-    setTimeout(() => triggerUPI(upiUrl), 200);
 }
 
 // QR Scanner
