@@ -633,231 +633,293 @@
 </div>
 
 <script>
-    // ----- GLOBALS -----
-    let html5QrScanner = null;
+let html5QrScanner = null;
 
-    // Page navigation
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(page => {
-            page.classList.remove('active-page');
-        });
-        document.getElementById(pageId).classList.add('active-page');
-        // update bottom nav active class
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            if(btn.getAttribute('data-page') === pageId) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
-    }
+// Page Navigation
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active-page');
+    });
 
-    // bottom nav event listeners
+    document.getElementById(pageId).classList.add('active-page');
+
     document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const targetPage = btn.getAttribute('data-page');
-            if(targetPage) showPage(targetPage);
-        });
+        btn.classList.toggle(
+            'active',
+            btn.getAttribute('data-page') === pageId
+        );
     });
+}
 
-    // ---- QR SCANNER LOGIC (using html5-qrcode) ----
-    async function openScanQR() {
-        const scannerDiv = document.getElementById('scannerModal');
-        scannerDiv.style.display = 'flex';
-        // initialize scanner
-        if (!html5QrScanner) {
-            const readerElem = document.getElementById('qr-reader');
-            readerElem.innerHTML = ""; // clear
-            html5QrScanner = new Html5Qrcode("qr-reader");
-            try {
-                await html5QrScanner.start(
-                    { facingMode: "environment" },
-                    { fps: 10, qrbox: { width: 280, height: 280 } },
-                    (decodedText) => {
-                        // on successful scan
-                        if (decodedText && decodedText.includes("upi://pay")) {
-                            handleUpiQr(decodedText);
-                            closeScannerModal();
-                        } else if (decodedText && (decodedText.includes("@") || decodedText.match(/^\d{10,}$/))) {
-                            // some qr might contain plain upi id or number
-                            let upiIdOrNumber = decodedText.trim();
-                            openCustomPayWithUpi(upiIdOrNumber);
-                            closeScannerModal();
-                        } else {
-                            alert("Scanned data not a valid UPI QR. Please scan UPI QR code.");
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        showPage(btn.dataset.page);
+    });
+});
+
+// QR Scanner
+async function openScanQR() {
+    const scannerDiv = document.getElementById('scannerModal');
+    scannerDiv.style.display = 'flex';
+
+    if (html5QrScanner) return;
+
+    html5QrScanner = new Html5Qrcode("qr-reader");
+
+    try {
+        await html5QrScanner.start(
+            { facingMode: "environment" },
+            {
+                fps: 10,
+                qrbox: { width: 280, height: 280 }
+            },
+            async (decodedText) => {
+
+                // UPI QR
+                if (
+                    decodedText &&
+                    (
+                        decodedText.includes("upi://pay") ||
+                        decodedText.includes("upi://")
+                    )
+                ) {
+
+                    let amount = prompt("Enter Amount (₹)");
+
+                    if (
+                        amount &&
+                        !isNaN(amount) &&
+                        parseFloat(amount) > 0
+                    ) {
+
+                        let upiUrl = decodedText;
+
+                        if (!upiUrl.includes("am=")) {
+                            upiUrl +=
+                                (upiUrl.includes("?") ? "&" : "?") +
+                                "am=" +
+                                encodeURIComponent(amount);
                         }
-                    },
-                    (errorMsg) => {
-                        // silent ignore
+
+                        await closeScannerModal();
+
+                        setTimeout(() => {
+                            window.location.href = upiUrl;
+                        }, 300);
+                    } else {
+                        await closeScannerModal();
                     }
-                );
-            } catch(err) {
-                alert("Camera access required to scan QR.");
-                closeScannerModal();
-            }
-        } else {
-            try {
-                await html5QrScanner.start();
-            } catch(e) { alert("Restart camera failed"); }
-        }
+
+                    return;
+                }
+
+// Plain UPI ID / Mobile
+if (
+    decodedText &&
+    (
+        decodedText.includes("@") ||
+        /^\d{10}$/.test(decodedText.trim())
+    )
+) {
+
+    let upiId = decodedText.trim();
+
+    if (/^\d{10}$/.test(upiId)) {
+        upiId = upiId + "@okhdfcbank";
     }
 
-    function closeScannerModal() {
-        const modal = document.getElementById('scannerModal');
-        modal.style.display = 'none';
-        if (html5QrScanner) {
-            html5QrScanner.stop().catch(err=>console.warn);
-        }
-    }
+    let amount = prompt("Enter Amount (₹)");
 
-    // handle upi qr redirect
-    function handleUpiQr(upiUrl) {
-        // extract pa and pn if possible, but we can redirect directly
+                    if (
+                        amount &&
+                        !isNaN(amount) &&
+                        parseFloat(amount) > 0
+                    ) {
+
+                        let redirectUrl =
+                            `upi://pay?pa=${encodeURIComponent(upiId)}&pn=User&am=${amount}&cu=INR`;
+
+                        await closeScannerModal();
+
+                        setTimeout(() => {
+                            window.location.href = redirectUrl;
+                        }, 300);
+                    } else {
+                        await closeScannerModal();
+                    }
+
+                    return;
+                }
+
+                alert("Invalid UPI QR Code");
+            },
+            () => {}
+        );
+    } catch (err) {
+        console.error(err);
+        alert("Camera access required");
+        await closeScannerModal();
+    }
+}
+
+async function closeScannerModal() {
+    document.getElementById('scannerModal').style.display = 'none';
+
+    if (html5QrScanner) {
         try {
-            let urlObj = new URL(upiUrl);
-            let params = new URLSearchParams(urlObj.search);
-            let pa = params.get("pa") || "";
-            let pn = params.get("pn") || "Merchant";
-            let amount = params.get("am") || "";
-            if(pa) {
-                let redirectUrl = `upi://pay?pa=${encodeURIComponent(pa)}&pn=${encodeURIComponent(pn)}&cu=INR`;
-                if(amount) redirectUrl += `&am=${amount}`;
-                window.location.href = redirectUrl;
-            } else {
-                window.location.href = upiUrl;
-            }
-        } catch(e) {
-            window.location.href = upiUrl;
+            await html5QrScanner.stop();
+            await html5QrScanner.clear();
+        } catch (e) {
+            console.log(e);
         }
+
+        html5QrScanner = null;
+    }
+}
+
+// Pay Anyone
+function openPayAnyone() {
+    document.getElementById('payAnyoneModal').style.display = 'flex';
+}
+
+function processPayAnyone() {
+
+    let payee =
+        document.getElementById('payAnyoneId').value.trim();
+
+    let amount =
+        document.getElementById('payAnyoneAmount').value.trim();
+
+    let remark =
+        document.getElementById('payAnyoneRemark').value.trim();
+
+    if (!payee) {
+        alert("Please enter UPI ID or mobile number");
+        return;
     }
 
-    function openCustomPayWithUpi(upiId) {
-        let amount = prompt("Enter amount (₹)", "100");
-        if(amount && !isNaN(amount) && parseFloat(amount) > 0) {
-            let redirectUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=User&am=${amount}&cu=INR`;
-            window.location.href = redirectUrl;
-        } else if(amount) alert("Invalid amount");
+    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+        alert("Enter valid amount");
+        return;
     }
 
-    // ---- PAY ANYONE (UPI ID or Mobile Number) ----
-    function openPayAnyone() {
-        document.getElementById('payAnyoneModal').style.display = 'flex';
+    let upiAddress = payee;
+
+    if (/^\d{10}$/.test(payee)) {
+        upiAddress = payee + "@okhdfcbank";
     }
 
-    function processPayAnyone() {
-        let payee = document.getElementById('payAnyoneId').value.trim();
-        let amount = document.getElementById('payAnyoneAmount').value.trim();
-        let remark = document.getElementById('payAnyoneRemark').value.trim();
+    let redirectUrl =
+        `upi://pay?pa=${encodeURIComponent(upiAddress)}&pn=Recipient&am=${amount}&cu=INR&tn=${encodeURIComponent(remark)}`;
 
-        if(!payee) {
-            alert("Please enter UPI ID or mobile number");
-            return;
+    window.location.href = redirectUrl;
+
+    closeModal('payAnyoneModal');
+}
+
+// Bank Transfer
+function openBankTransfer() {
+    document.getElementById('bankTransferModal').style.display = 'flex';
+}
+
+function processBankTransfer() {
+
+    let holder =
+        document.getElementById('bankHolderName').value.trim();
+
+    let account =
+        document.getElementById('bankAccountNo').value.trim();
+
+    let ifsc =
+        document.getElementById('bankIfsc').value.trim();
+
+    let amount =
+        document.getElementById('bankAmount').value.trim();
+
+    if (!holder || !account || !ifsc) {
+        alert("Please fill all bank details");
+        return;
+    }
+
+    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+        alert("Enter valid amount");
+        return;
+    }
+
+    let bankUpiId =
+        `${account}@${ifsc.slice(0,4)}bank`;
+
+    let redirectUrl =
+        `upi://pay?pa=${encodeURIComponent(bankUpiId)}&pn=${encodeURIComponent(holder)}&am=${amount}&cu=INR&mode=04`;
+
+    window.location.href = redirectUrl;
+
+    closeModal('bankTransferModal');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+function showBillPay() {
+    alert("Bill Payment Coming Soon");
+}
+
+// Overlay Close
+window.onclick = function(event) {
+
+    ['payAnyoneModal', 'bankTransferModal'].forEach(id => {
+        let modal = document.getElementById(id);
+
+        if (event.target === modal) {
+            modal.style.display = 'none';
         }
-        if(!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-            alert("Enter valid amount");
-            return;
-        }
-        // if mobile number, convert to upi format? we'll use as payee address
-        let upiAddress = payee;
-        if(/^\d{10}$/.test(payee)) {
-            upiAddress = payee + "@okhdfcbank"; // fallback default but most bank supports
-        }
-        let redirectUrl = `upi://pay?pa=${encodeURIComponent(upiAddress)}&pn=Recipient&am=${amount}&cu=INR&tn=${encodeURIComponent(remark)}`;
-        window.location.href = redirectUrl;
-        closeModal('payAnyoneModal');
-        // clear fields after small delay
-        setTimeout(() => {
-            document.getElementById('payAnyoneId').value = '';
-            document.getElementById('payAnyoneAmount').value = '';
-            document.getElementById('payAnyoneRemark').value = '';
-        }, 500);
-    }
-
-    // ---- BANK TRANSFER (redirect to bank app / upi intent fallback) ----
-    function openBankTransfer() {
-        document.getElementById('bankTransferModal').style.display = 'flex';
-    }
-
-    function processBankTransfer() {
-        let holder = document.getElementById('bankHolderName').value.trim();
-        let account = document.getElementById('bankAccountNo').value.trim();
-        let ifsc = document.getElementById('bankIfsc').value.trim();
-        let amount = document.getElementById('bankAmount').value.trim();
-
-        if(!holder || !account || !ifsc) {
-            alert("Please fill all bank details: Account holder, Account number, IFSC");
-            return;
-        }
-        if(!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-            alert("Enter valid amount");
-            return;
-        }
-        // Since native UPI doesn't support bank transfer directly, we construct a UPI intent with bank account?
-        // We'll use a standard UPI intent that supports bank account transfer using "pa" as virtual address? But best use NPCI's "payto" 
-        // Actually for Bank Account transfer we can use following intent: 
-        // upi://pay?pa=bankAcNumber@bankname&pn=HolderName&am=XXX&cu=INR&mode=04&org=ICIC
-        // Simpler: Create a UPI URL with payee as bank account but dynamic; many banks support pay using account number@bank_ifsc
-        // Use standard approach: Some upi apps support 'paya' param. But we'll create a standard upi://pay with pa= (Account+IFSC) if we create virtual.
-        // For demo, we use UPI intent with "account@bank" format. I'll use "AC"+account+"@"+ifsc.slice(0,4)+"bank" (simplified)
-        let bankUpiId = `${account}@${ifsc.slice(0,4)}bank`;
-        let redirectUrl = `upi://pay?pa=${encodeURIComponent(bankUpiId)}&pn=${encodeURIComponent(holder)}&am=${amount}&cu=INR&mode=04`;
-        window.location.href = redirectUrl;
-        closeModal('bankTransferModal');
-        setTimeout(() => {
-            document.getElementById('bankHolderName').value = '';
-            document.getElementById('bankAccountNo').value = '';
-            document.getElementById('bankIfsc').value = '';
-            document.getElementById('bankAmount').value = '';
-        }, 300);
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
-    }
-
-    function showBillPay() {
-        alert("Bill Payment Feature: Pay electricity, water, mobile recharge coming soon! Use Scan QR or Pay Anyone.");
-    }
-
-    // Overlay click to close modals
-    window.onclick = function(event) {
-        const modals = ['payAnyoneModal', 'bankTransferModal'];
-        modals.forEach(id => {
-            let modal = document.getElementById(id);
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-        if(event.target === document.getElementById('scannerModal')) {
-            closeScannerModal();
-        }
-    }
-
-    // ensure scanner modal cleanup
-    window.addEventListener('beforeunload', () => {
-        if(html5QrScanner) html5QrScanner.stop().catch(e=>{});
     });
-    
-    // Default show home on load
-    showPage('homePage');
-    console.log("ModiPay Ultimate with Pay Anyone & Bank Transfer activated");
-    let lastScrollTop = 0;
+
+    if (
+        event.target ===
+        document.getElementById('scannerModal')
+    ) {
+        closeScannerModal();
+    }
+};
+
+// Cleanup
+window.addEventListener('beforeunload', async () => {
+    if (html5QrScanner) {
+        try {
+            await html5QrScanner.stop();
+            await html5QrScanner.clear();
+        } catch (e) {}
+    }
+});
+
+// Bottom Nav Hide/Show
+let lastScrollTop = 0;
 const bottomNav = document.querySelector('.bottom-nav');
 
-window.addEventListener('scroll', function () {
-    let currentScroll =
-        window.pageYOffset || document.documentElement.scrollTop;
+window.addEventListener('scroll', () => {
 
-    if (currentScroll > lastScrollTop && currentScroll > 50) {
-        // Scroll Down
+    let currentScroll =
+        window.pageYOffset ||
+        document.documentElement.scrollTop;
+
+    if (
+        currentScroll > lastScrollTop &&
+        currentScroll > 50
+    ) {
         bottomNav.classList.add('hide');
     } else {
-        // Scroll Up
         bottomNav.classList.remove('hide');
     }
 
-    lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+    lastScrollTop =
+        currentScroll <= 0 ? 0 : currentScroll;
 });
+
+// Default Page
+showPage('homePage');
+console.log("ModiPay Loaded");
 </script>
 </body>
 </html>
