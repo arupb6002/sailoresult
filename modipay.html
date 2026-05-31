@@ -386,7 +386,7 @@
             </div>
             <div class="balance-card">
                 <div class="balance-label">Total Balance</div>
-                <div class="balance-amount">₹ 48,250 <span>INR</span></div>
+                <div class="balance-amount">₹ 8,250 <span>INR</span></div>
                 <div style="font-size:12px; margin-top:12px; opacity:0.8;">
                     <i class="fas fa-credit-card"></i> **** 4821
                 </div>
@@ -824,15 +824,15 @@ document.body.addEventListener('touchstart', () => {
     } catch(e) {}
 }, { once: true });
 
-// ===== UPI Deep Link Trigger (anchor method — no history change) =====
+// ===== UPI Deep Link Trigger (iframe method — page stays, no back) =====
 function triggerUPI(upiUrl) {
     showToast("Opening UPI app...");
-    const a = document.createElement('a');
-    a.href = upiUrl;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => { if (document.body.contains(a)) document.body.removeChild(a); }, 1000);
+    if (navigator.vibrate) navigator.vibrate(50);
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = upiUrl;
+    document.body.appendChild(iframe);
+    setTimeout(() => { if (document.body.contains(iframe)) document.body.removeChild(iframe); }, 2000);
 }
 
 // Toast notification
