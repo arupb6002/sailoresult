@@ -4,10 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ModiPay Ultimate • UPI & Bank Transfer</title>
-    <!-- html5-qrcode scanner library -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-    <!-- Font Awesome 6 (free icons) -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -22,7 +20,6 @@
             overflow-x: hidden;
         }
 
-        /* Main container - mobile first */
         .app-container {
             max-width: 450px;
             margin: 0 auto;
@@ -34,13 +31,13 @@
             overflow-x: hidden;
         }
 
-        /* Header with gradient matching image style */
         .header-gradient {
             background: linear-gradient(135deg, #F97316 0%, #FF8C42 50%, #1FAA59 100%);
             padding: 20px 20px 32px 20px;
             border-radius: 0 0 28px 28px;
             color: white;
         }
+
 @font-face{
     font-family: 'ModiPay';
     src: url('/assets/modipay.ttf') format('truetype');
@@ -52,12 +49,8 @@
     font-weight: 800;
     text-align: center;
     letter-spacing: 1px;
-
-           /* Top-Bottom 3px, Left-Right 0 */
     padding-top: 10px;
-
-    background: #138808;    /* Green background */
-    
+    background: #138808;
 }
 .modipay-tagline{
     color: #ffffff;
@@ -65,23 +58,14 @@
     font-weight: bold;
     font-style: italic;
     text-align: center;
-
-    background: #138808; /* Green */
-
+    background: #138808;
     margin: 0;
     padding-bottom: 3px;
-    
-
     letter-spacing: 0.3px;
 }
 
-.logo-modipay .modi{
-    color: #FF7A00; /* Saffron */
-}
-
-.logo-modipay .pay{
-    color: #ffffff; /* Green */
-}
+.logo-modipay .modi{ color: #FF7A00; }
+.logo-modipay .pay{ color: #ffffff; }
 
         .welcome-row {
             display: flex;
@@ -90,22 +74,12 @@
             margin-bottom: 20px;
         }
 
-        .user-greeting h3 {
-            font-size: 18px;
-            font-weight: 500;
-            opacity: 0.9;
-        }
-
-        .user-greeting h2 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-top: 4px;
-        }
+        .user-greeting h3 { font-size: 18px; font-weight: 500; opacity: 0.9; }
+        .user-greeting h2 { font-size: 24px; font-weight: 700; margin-top: 4px; }
 
         .profile-icon {
             background: rgba(255,255,255,0.2);
-            width: 48px;
-            height: 48px;
+            width: 48px; height: 48px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -114,7 +88,6 @@
             backdrop-filter: blur(4px);
         }
 
-        /* Balance Card */
         .balance-card {
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(10px);
@@ -124,43 +97,22 @@
             border: 1px solid rgba(255,255,255,0.2);
         }
 
-        .balance-label {
-            font-size: 14px;
-            opacity: 0.8;
-            letter-spacing: 0.5px;
-        }
-
+        .balance-label { font-size: 14px; opacity: 0.8; letter-spacing: 0.5px; }
         .balance-amount {
-            font-size: 36px;
-            font-weight: 800;
+            font-size: 36px; font-weight: 800;
             margin-top: 8px;
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
+            display: flex; align-items: baseline; gap: 8px;
         }
+        .balance-amount span { font-size: 20px; font-weight: 500; }
 
-        .balance-amount span {
-            font-size: 20px;
-            font-weight: 500;
-        }
-
-        /* Section Titles */
         .section-title {
             padding: 24px 20px 12px 20px;
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 18px; font-weight: 700;
             color: #1a2c3e;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            display: flex; align-items: center; gap: 10px;
         }
+        .section-title i { color: #F97316; font-size: 20px; }
 
-        .section-title i {
-            color: #F97316;
-            font-size: 20px;
-        }
-
-        /* Feature Grid - 4 options exactly like image */
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -178,34 +130,15 @@
             cursor: pointer;
             border: 1px solid #eef2f8;
         }
+        .feature-item:active { transform: scale(0.96); background: #fff5e8; }
+        .feature-icon { font-size: 28px; margin-bottom: 8px; color: #F97316; }
+        .feature-icon i { display: block; }
+        .feature-label { font-size: 12px; font-weight: 600; color: #2c3e50; }
 
-        .feature-item:active {
-            transform: scale(0.96);
-            background: #fff5e8;
-        }
-
-.feature-icon{
-    font-size: 28px;
-    margin-bottom: 8px;
-    color: #F97316;
-}
-
-.feature-icon i{
-    display: block;
-}
-
-        .feature-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        /* Cards (Recent Activity style) */
         .card-modern {
             background: white;
             border-radius: 24px;
             padding: 20px;
-            margin-bottom: 40px;
             margin: 0 16px 20px 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
             border: 1px solid #edf2f7;
@@ -219,13 +152,10 @@
             color: #475569;
         }
 
-        /* Modal / Bottom Sheet Styles */
+        /* Modal / Bottom Sheet */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(4px);
             z-index: 1000;
@@ -241,8 +171,9 @@
             border-radius: 32px 32px 0 0;
             padding: 28px 22px 34px;
             animation: slideUp 0.3s ease;
-            max-height: 85vh;
+            max-height: 90vh;
             overflow-y: auto;
+            position: relative;
         }
 
         @keyframes slideUp {
@@ -251,25 +182,17 @@
         }
 
         .modal-title {
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 22px; font-weight: 700;
             margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            display: flex; align-items: center; gap: 12px;
             color: #1e293b;
         }
 
-        .input-group {
-            margin-bottom: 20px;
-        }
-
+        .input-group { margin-bottom: 20px; }
         .input-group label {
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 13px; font-weight: 600;
             color: #475569;
-            display: block;
-            margin-bottom: 8px;
+            display: block; margin-bottom: 8px;
         }
 
         .input-modern {
@@ -281,7 +204,6 @@
             background: #fefefe;
             transition: all 0.2s;
         }
-
         .input-modern:focus {
             outline: none;
             border-color: #F97316;
@@ -290,42 +212,27 @@
 
         .btn-pay-modal {
             background: linear-gradient(95deg, #F97316, #FF8C42);
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 60px;
-            color: white;
-            font-weight: 700;
-            font-size: 18px;
-            margin-top: 16px;
-            cursor: pointer;
-            transition: 0.2s;
+            width: 100%; padding: 16px;
+            border: none; border-radius: 60px;
+            color: white; font-weight: 700; font-size: 18px;
+            margin-top: 16px; cursor: pointer; transition: 0.2s;
         }
-
-        .btn-pay-modal:active {
-            transform: scale(0.97);
-        }
+        .btn-pay-modal:active { transform: scale(0.97); }
 
         .close-sheet {
             position: absolute;
-            top: 18px;
-            right: 22px;
+            top: 18px; right: 22px;
             background: #f1f5f9;
             border: none;
-            width: 36px;
-            height: 36px;
+            width: 36px; height: 36px;
             border-radius: 30px;
-            font-size: 20px;
-            cursor: pointer;
+            font-size: 20px; cursor: pointer;
         }
 
         /* Scanner container */
         .scanner-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: #000;
             z-index: 1100;
             display: none;
@@ -344,80 +251,46 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: white;
-            padding: 12px;
+            color: white; padding: 12px;
         }
 
         .close-scanner {
             background: rgba(255,255,255,0.2);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 40px;
-            color: white;
-            font-weight: 600;
+            border: none; padding: 10px 20px;
+            border-radius: 40px; color: white; font-weight: 600;
         }
 
-        /* Bottom navigation */
-.bottom-nav{
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    max-width: 450px;
-    margin: 0 auto;
-
-    background: rgba(255,255,255,0.96);
-    backdrop-filter: blur(12px);
-
-    display: flex;
-    justify-content: space-around;
-    padding: 12px 20px 22px;
-
-    border-top: 1px solid #edf2f7;
-    box-shadow: 0 -4px 12px rgba(0,0,0,0.02);
-
-    transition: transform 0.3s ease;
-}
-
-.bottom-nav.hide{
-    transform: translateY(100%);
-}
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            max-width: 450px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 20px 22px;
+            border-top: 1px solid #edf2f7;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.02);
+            transition: transform 0.3s ease;
+        }
+        .bottom-nav.hide { transform: translateY(100%); }
 
         .nav-btn {
-            background: none;
-            border: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            color: #94a3b8;
-            transition: 0.2s;
-            cursor: pointer;
+            background: none; border: none;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 4px;
+            font-size: 12px; color: #94a3b8;
+            transition: 0.2s; cursor: pointer;
         }
+        .nav-btn i { font-size: 22px; }
+        .nav-btn.active { color: #F97316; }
 
-        .nav-btn i {
-            font-size: 22px;
-        }
+        .page-content { padding-bottom: 80px; }
+        .page { display: none; }
+        .page.active-page { display: block; }
 
-        .nav-btn.active {
-            color: #F97316;
-        }
-
-        .page-content {
-            padding-bottom: 80px;
-        }
-
-        /* hide pages */
-        .page {
-            display: none;
-        }
-
-        .page.active-page {
-            display: block;
-        }
-
-        /* recent activity mock */
         .transaction-row {
             display: flex;
             justify-content: space-between;
@@ -425,9 +298,69 @@
             border-bottom: 1px solid #f0f2f5;
         }
 
-        hr {
-            margin: 16px 0;
-            border-color: #f0eef3;
+        hr { margin: 16px 0; border-color: #f0eef3; }
+
+        /* ===== NEW: QR Payment Modal ===== */
+        .merchant-banner {
+            background: linear-gradient(110deg, #fff2e0, #ffffff);
+            border-radius: 20px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid #ffe0bc;
+        }
+        .merchant-banner-icon {
+            background: linear-gradient(135deg, #F97316, #FF8C42);
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 22px;
+            flex-shrink: 0;
+        }
+        .merchant-banner-name {
+            font-size: 18px; font-weight: 700; color: #1e293b;
+        }
+        .merchant-banner-sub {
+            font-size: 12px; color: #94a3b8; margin-top: 2px;
+        }
+
+        /* Quick amount buttons */
+        .quick-amounts {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 12px 0 6px;
+        }
+        .quick-amt-btn {
+            background: #f1f5f9;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .quick-amt-btn:active,
+        .quick-amt-btn.selected {
+            background: #fff5e8;
+            border-color: #F97316;
+            color: #F97316;
+            transform: scale(0.96);
+        }
+
+        .upi-secure-note {
+            font-size: 12px;
+            color: #94a3b8;
+            text-align: center;
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
     </style>
 </head>
@@ -439,11 +372,10 @@
     Pradhan Mantri Har Ghar UPI Yojna
 </div>
 <div class="app-container">
-    <!-- Home Page (Main Dashboard) -->
+    <!-- Home Page -->
     <div id="homePage" class="page active-page">
         <div class="header-gradient">
             <div class="welcome-row">
-          
                 <div class="user-greeting">
                     <h3>Welcome back,</h3>
                     <h2>Developer Arup</h2>
@@ -454,9 +386,7 @@
             </div>
             <div class="balance-card">
                 <div class="balance-label">Total Balance</div>
-                <div class="balance-amount">
-                    ₹ 48,250 <span>INR</span>
-                </div>
+                <div class="balance-amount">₹ 48,250 <span>INR</span></div>
                 <div style="font-size:12px; margin-top:12px; opacity:0.8;">
                     <i class="fas fa-credit-card"></i> **** 4821
                 </div>
@@ -466,35 +396,24 @@
         <div class="section-title">
             <i class="fas fa-th-large"></i> Services
         </div>
-<div class="feature-grid">
-    <div class="feature-item" onclick="openScanQR()">
-        <div class="feature-icon">
-            <i class="fas fa-qrcode"></i>
+        <div class="feature-grid">
+            <div class="feature-item" onclick="openScanQR()">
+                <div class="feature-icon"><i class="fas fa-qrcode"></i></div>
+                <div class="feature-label">Scan QR</div>
+            </div>
+            <div class="feature-item" onclick="openPayAnyone()">
+                <div class="feature-icon"><i class="fas fa-user-friends"></i></div>
+                <div class="feature-label">Pay Anyone</div>
+            </div>
+            <div class="feature-item" onclick="openBankTransfer()">
+                <div class="feature-icon"><i class="fas fa-building-columns"></i></div>
+                <div class="feature-label">Bank Transfer</div>
+            </div>
+            <div class="feature-item" onclick="showBillPay()">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <div class="feature-label">Bill Pay</div>
+            </div>
         </div>
-        <div class="feature-label">Scan QR</div>
-    </div>
-
-    <div class="feature-item" onclick="openPayAnyone()">
-        <div class="feature-icon">
-            <i class="fas fa-user-friends"></i>
-        </div>
-        <div class="feature-label">Pay Anyone</div>
-    </div>
-
-    <div class="feature-item" onclick="openBankTransfer()">
-        <div class="feature-icon">
-            <i class="fas fa-building-columns"></i>
-        </div>
-        <div class="feature-label">Bank Transfer</div>
-    </div>
-
-    <div class="feature-item" onclick="showBillPay()">
-        <div class="feature-icon">
-            <i class="fas fa-bolt"></i>
-        </div>
-        <div class="feature-label">Bill Pay</div>
-    </div>
-</div>
 
         <div class="section-title">
             <i class="fas fa-clock"></i> Recent Transactions
@@ -520,7 +439,7 @@
         <div style="height: 20px;"></div>
     </div>
 
-    <!-- Profile Page (light) -->
+    <!-- Profile Page -->
     <div id="profilePage" class="page">
         <div class="header-gradient" style="border-radius: 0 0 28px 28px;">
             <div class="welcome-row">
@@ -544,24 +463,10 @@
             <div><i class="fas fa-shield-alt"></i> KYC Verified ✅</div>
         </div>
         <div class="card-modern">
-    <h4>Make Your Modi Pay</h4>
-    <p style="margin-top:8px;color:#64748b;">
-        Get your own Modi Pay setup and personalized payment profile.
-    </p>
-
-    <a href="https://wa.me/916002148763" target="_blank" style="
-        display:inline-block;
-        margin-top:15px;
-        background:#0e7600;
-        color:white;
-        text-decoration:none;
-        padding:12px 24px;
-        border-radius:50px;
-        font-weight:700;
-    ">
-        Make Now
-    </a>
-</div>
+            <h4>Make Your Modi Pay</h4>
+            <p style="margin-top:8px;color:#64748b;">Get your own Modi Pay setup and personalized payment profile.</p>
+            <a href="https://wa.me/916002148763" target="_blank" style="display:inline-block;margin-top:15px;background:#0e7600;color:white;text-decoration:none;padding:12px 24px;border-radius:50px;font-weight:700;">Make Now</a>
+        </div>
         <div class="card-modern">
             <h4>UPI Settings</h4>
             <p>Default Payment Method: UPI / Bank</p>
@@ -579,7 +484,49 @@
         <p style="color:white; text-align:center; margin-top: 24px;">Place QR code inside the frame</p>
     </div>
 
-    <!-- Pay Anyone Modal (UPI ID / Mobile) -->
+    <!-- ===== NEW: QR Payment Modal (replaces prompt) ===== -->
+    <div id="qrPaymentModal" class="modal-overlay">
+        <div class="modal-sheet">
+            <button class="close-sheet" onclick="closeModal('qrPaymentModal')">✕</button>
+            <div class="modal-title"><i class="fas fa-qrcode"></i> Pay via QR</div>
+
+            <!-- Merchant Info Banner -->
+            <div class="merchant-banner">
+                <div class="merchant-banner-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div>
+                    <div class="merchant-banner-name" id="qrMerchantName">Merchant</div>
+                    <div class="merchant-banner-sub" id="qrUpiId">UPI ID</div>
+                </div>
+            </div>
+
+            <!-- Amount Input -->
+            <div class="input-group">
+                <label>Amount (₹)</label>
+                <input type="number" id="qrAmountInput" class="input-modern" placeholder="Enter amount">
+            </div>
+
+            <!-- Quick Amount Buttons -->
+            <div class="quick-amounts">
+                <button class="quick-amt-btn" onclick="setQuickAmt(50)">₹50</button>
+                <button class="quick-amt-btn" onclick="setQuickAmt(100)">₹100</button>
+                <button class="quick-amt-btn" onclick="setQuickAmt(250)">₹250</button>
+                <button class="quick-amt-btn" onclick="setQuickAmt(500)">₹500</button>
+                <button class="quick-amt-btn" onclick="setQuickAmt(1000)">₹1000</button>
+            </div>
+
+            <button class="btn-pay-modal" onclick="processQRPayment()">
+                <i class="fas fa-arrow-right"></i> Pay Securely
+            </button>
+
+            <div class="upi-secure-note">
+                <i class="fas fa-lock"></i> Secure UPI Payment • Redirects to your UPI app
+            </div>
+        </div>
+    </div>
+
+    <!-- Pay Anyone Modal -->
     <div id="payAnyoneModal" class="modal-overlay">
         <div class="modal-sheet">
             <button class="close-sheet" onclick="closeModal('payAnyoneModal')">✕</button>
@@ -600,7 +547,7 @@
         </div>
     </div>
 
-    <!-- Bank Transfer Modal (Account Number, IFSC, Holder) -->
+    <!-- Bank Transfer Modal -->
     <div id="bankTransferModal" class="modal-overlay">
         <div class="modal-sheet">
             <button class="close-sheet" onclick="closeModal('bankTransferModal')">✕</button>
@@ -626,7 +573,7 @@
     </div>
 </div>
 
-<!-- Bottom Navigation (Fixed) -->
+<!-- Bottom Navigation -->
 <div class="bottom-nav">
     <button class="nav-btn" data-page="homePage"><i class="fas fa-home"></i><span>Home</span></button>
     <button class="nav-btn" data-page="profilePage"><i class="fas fa-user"></i><span>Profile</span></button>
@@ -635,33 +582,84 @@
 <script>
 let html5QrScanner = null;
 
+// ===== Stored QR scan data =====
+let pendingQrData = {
+    upiUrl: "",
+    upiId: "",
+    merchantName: "Merchant"
+};
+
 // Page Navigation
 function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active-page');
-    });
-
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
     document.getElementById(pageId).classList.add('active-page');
-
     document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.toggle(
-            'active',
-            btn.getAttribute('data-page') === pageId
-        );
+        btn.classList.toggle('active', btn.getAttribute('data-page') === pageId);
     });
 }
 
 document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        showPage(btn.dataset.page);
-    });
+    btn.addEventListener('click', () => showPage(btn.dataset.page));
 });
+
+// ===== QR Payment Modal Logic =====
+function openQRPaymentModal(upiId, merchantName, rawUrl) {
+    pendingQrData.upiId = upiId;
+    pendingQrData.merchantName = merchantName;
+    pendingQrData.upiUrl = rawUrl;
+
+    document.getElementById('qrMerchantName').textContent = merchantName || upiId;
+    document.getElementById('qrUpiId').textContent = upiId;
+    document.getElementById('qrAmountInput').value = "";
+
+    // Reset quick amt highlights
+    document.querySelectorAll('.quick-amt-btn').forEach(b => b.classList.remove('selected'));
+
+    document.getElementById('qrPaymentModal').style.display = 'flex';
+}
+
+function setQuickAmt(amount) {
+    document.getElementById('qrAmountInput').value = amount;
+    document.querySelectorAll('.quick-amt-btn').forEach(b => b.classList.remove('selected'));
+    event.target.classList.add('selected');
+}
+
+function processQRPayment() {
+    let amount = document.getElementById('qrAmountInput').value.trim();
+
+    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+        document.getElementById('qrAmountInput').style.borderColor = '#e53e3e';
+        document.getElementById('qrAmountInput').style.boxShadow = '0 0 0 3px rgba(229,62,62,0.15)';
+        setTimeout(() => {
+            document.getElementById('qrAmountInput').style.borderColor = '';
+            document.getElementById('qrAmountInput').style.boxShadow = '';
+        }, 1500);
+        return;
+    }
+
+    let upiUrl = "";
+
+    if (pendingQrData.upiUrl && pendingQrData.upiUrl.includes("upi://pay")) {
+        // Full UPI QR url — append amount
+        upiUrl = pendingQrData.upiUrl;
+        if (!upiUrl.includes("am=")) {
+            upiUrl += (upiUrl.includes("?") ? "&" : "?") + "am=" + encodeURIComponent(amount);
+        }
+    } else {
+        // Plain UPI ID / mobile
+        let upiId = pendingQrData.upiId;
+        if (/^\d{10}$/.test(upiId)) upiId = upiId + "@okhdfcbank";
+        upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(pendingQrData.merchantName)}&am=${amount}&cu=INR`;
+    }
+
+    closeModal('qrPaymentModal');
+    setTimeout(() => { window.location.href = upiUrl; }, 200);
+}
 
 // QR Scanner
 async function openScanQR() {
     const scannerDiv = document.getElementById('scannerModal');
     scannerDiv.style.display = 'flex';
-
     if (html5QrScanner) return;
 
     html5QrScanner = new Html5Qrcode("qr-reader");
@@ -669,85 +667,33 @@ async function openScanQR() {
     try {
         await html5QrScanner.start(
             { facingMode: "environment" },
-            {
-                fps: 10,
-                qrbox: { width: 280, height: 280 }
-            },
+            { fps: 10, qrbox: { width: 280, height: 280 } },
             async (decodedText) => {
+                await closeScannerModal();
 
-                // UPI QR
-                if (
-                    decodedText &&
-                    (
-                        decodedText.includes("upi://pay") ||
-                        decodedText.includes("upi://")
-                    )
-                ) {
+                // UPI QR URL
+                if (decodedText && decodedText.includes("upi://")) {
+                    let merchantName = "Merchant";
+                    let upiId = "";
 
-                    let amount = prompt("Enter Amount (₹)");
-
-                    if (
-                        amount &&
-                        !isNaN(amount) &&
-                        parseFloat(amount) > 0
-                    ) {
-
-                        let upiUrl = decodedText;
-
-                        if (!upiUrl.includes("am=")) {
-                            upiUrl +=
-                                (upiUrl.includes("?") ? "&" : "?") +
-                                "am=" +
-                                encodeURIComponent(amount);
-                        }
-
-                        await closeScannerModal();
-
-                        setTimeout(() => {
-                            window.location.href = upiUrl;
-                        }, 300);
-                    } else {
-                        await closeScannerModal();
+                    try {
+                        let urlObj = new URL(decodedText);
+                        let params = new URLSearchParams(urlObj.search);
+                        upiId = params.get("pa") || "";
+                        let pn = params.get("pn") || "Merchant";
+                        merchantName = decodeURIComponent(pn).replace(/\+/g, ' ');
+                    } catch (e) {
+                        upiId = decodedText;
                     }
 
+                    setTimeout(() => openQRPaymentModal(upiId, merchantName, decodedText), 300);
                     return;
                 }
 
-// Plain UPI ID / Mobile
-if (
-    decodedText &&
-    (
-        decodedText.includes("@") ||
-        /^\d{10}$/.test(decodedText.trim())
-    )
-) {
-
-    let upiId = decodedText.trim();
-
-    if (/^\d{10}$/.test(upiId)) {
-        upiId = upiId + "@okhdfcbank";
-    }
-
-    let amount = prompt("Enter Amount (₹)");
-
-                    if (
-                        amount &&
-                        !isNaN(amount) &&
-                        parseFloat(amount) > 0
-                    ) {
-
-                        let redirectUrl =
-                            `upi://pay?pa=${encodeURIComponent(upiId)}&pn=User&am=${amount}&cu=INR`;
-
-                        await closeScannerModal();
-
-                        setTimeout(() => {
-                            window.location.href = redirectUrl;
-                        }, 300);
-                    } else {
-                        await closeScannerModal();
-                    }
-
+                // Plain UPI ID or 10-digit mobile
+                if (decodedText && (decodedText.includes("@") || /^\d{10}$/.test(decodedText.trim()))) {
+                    let upiId = decodedText.trim();
+                    setTimeout(() => openQRPaymentModal(upiId, upiId, ""), 300);
                     return;
                 }
 
@@ -764,15 +710,11 @@ if (
 
 async function closeScannerModal() {
     document.getElementById('scannerModal').style.display = 'none';
-
     if (html5QrScanner) {
         try {
             await html5QrScanner.stop();
             await html5QrScanner.clear();
-        } catch (e) {
-            console.log(e);
-        }
-
+        } catch (e) { console.log(e); }
         html5QrScanner = null;
     }
 }
@@ -783,37 +725,18 @@ function openPayAnyone() {
 }
 
 function processPayAnyone() {
+    let payee = document.getElementById('payAnyoneId').value.trim();
+    let amount = document.getElementById('payAnyoneAmount').value.trim();
+    let remark = document.getElementById('payAnyoneRemark').value.trim();
 
-    let payee =
-        document.getElementById('payAnyoneId').value.trim();
-
-    let amount =
-        document.getElementById('payAnyoneAmount').value.trim();
-
-    let remark =
-        document.getElementById('payAnyoneRemark').value.trim();
-
-    if (!payee) {
-        alert("Please enter UPI ID or mobile number");
-        return;
-    }
-
-    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-        alert("Enter valid amount");
-        return;
-    }
+    if (!payee) { alert("Please enter UPI ID or mobile number"); return; }
+    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) { alert("Enter valid amount"); return; }
 
     let upiAddress = payee;
+    if (/^\d{10}$/.test(payee)) upiAddress = payee + "@okhdfcbank";
 
-    if (/^\d{10}$/.test(payee)) {
-        upiAddress = payee + "@okhdfcbank";
-    }
-
-    let redirectUrl =
-        `upi://pay?pa=${encodeURIComponent(upiAddress)}&pn=Recipient&am=${amount}&cu=INR&tn=${encodeURIComponent(remark)}`;
-
+    let redirectUrl = `upi://pay?pa=${encodeURIComponent(upiAddress)}&pn=Recipient&am=${amount}&cu=INR&tn=${encodeURIComponent(remark)}`;
     window.location.href = redirectUrl;
-
     closeModal('payAnyoneModal');
 }
 
@@ -823,37 +746,17 @@ function openBankTransfer() {
 }
 
 function processBankTransfer() {
+    let holder = document.getElementById('bankHolderName').value.trim();
+    let account = document.getElementById('bankAccountNo').value.trim();
+    let ifsc = document.getElementById('bankIfsc').value.trim();
+    let amount = document.getElementById('bankAmount').value.trim();
 
-    let holder =
-        document.getElementById('bankHolderName').value.trim();
+    if (!holder || !account || !ifsc) { alert("Please fill all bank details"); return; }
+    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) { alert("Enter valid amount"); return; }
 
-    let account =
-        document.getElementById('bankAccountNo').value.trim();
-
-    let ifsc =
-        document.getElementById('bankIfsc').value.trim();
-
-    let amount =
-        document.getElementById('bankAmount').value.trim();
-
-    if (!holder || !account || !ifsc) {
-        alert("Please fill all bank details");
-        return;
-    }
-
-    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-        alert("Enter valid amount");
-        return;
-    }
-
-    let bankUpiId =
-        `${account}@${ifsc.slice(0,4)}bank`;
-
-    let redirectUrl =
-        `upi://pay?pa=${encodeURIComponent(bankUpiId)}&pn=${encodeURIComponent(holder)}&am=${amount}&cu=INR&mode=04`;
-
+    let bankUpiId = `${account}@${ifsc.slice(0,4)}bank`;
+    let redirectUrl = `upi://pay?pa=${encodeURIComponent(bankUpiId)}&pn=${encodeURIComponent(holder)}&am=${amount}&cu=INR&mode=04`;
     window.location.href = redirectUrl;
-
     closeModal('bankTransferModal');
 }
 
@@ -865,59 +768,32 @@ function showBillPay() {
     alert("Bill Payment Coming Soon");
 }
 
-// Overlay Close
+// Overlay tap to close
 window.onclick = function(event) {
-
-    ['payAnyoneModal', 'bankTransferModal'].forEach(id => {
+    ['payAnyoneModal', 'bankTransferModal', 'qrPaymentModal'].forEach(id => {
         let modal = document.getElementById(id);
-
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
+        if (event.target === modal) modal.style.display = 'none';
     });
-
-    if (
-        event.target ===
-        document.getElementById('scannerModal')
-    ) {
-        closeScannerModal();
-    }
+    if (event.target === document.getElementById('scannerModal')) closeScannerModal();
 };
 
 // Cleanup
 window.addEventListener('beforeunload', async () => {
     if (html5QrScanner) {
-        try {
-            await html5QrScanner.stop();
-            await html5QrScanner.clear();
-        } catch (e) {}
+        try { await html5QrScanner.stop(); await html5QrScanner.clear(); } catch (e) {}
     }
 });
 
-// Bottom Nav Hide/Show
+// Bottom Nav Hide/Show on scroll
 let lastScrollTop = 0;
 const bottomNav = document.querySelector('.bottom-nav');
-
 window.addEventListener('scroll', () => {
-
-    let currentScroll =
-        window.pageYOffset ||
-        document.documentElement.scrollTop;
-
-    if (
-        currentScroll > lastScrollTop &&
-        currentScroll > 50
-    ) {
-        bottomNav.classList.add('hide');
-    } else {
-        bottomNav.classList.remove('hide');
-    }
-
-    lastScrollTop =
-        currentScroll <= 0 ? 0 : currentScroll;
+    let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+    if (currentScroll > lastScrollTop && currentScroll > 50) bottomNav.classList.add('hide');
+    else bottomNav.classList.remove('hide');
+    lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
 });
 
-// Default Page
 showPage('homePage');
 console.log("ModiPay Loaded");
 </script>
