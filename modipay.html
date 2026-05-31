@@ -652,6 +652,9 @@ function processQRPayment() {
         upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(pendingQrData.merchantName)}&am=${amount}&cu=INR`;
     }
 
+    // Play sound based on amount
+    playPaymentSound(parseFloat(amount));
+
     closeModal('qrPaymentModal');
     setTimeout(() => triggerUPI(upiUrl), 200);
 }
@@ -784,6 +787,43 @@ window.addEventListener('beforeunload', async () => {
     }
 });
 
+// ===== Payment Sound =====
+function playPaymentSound(amount) {
+    let audioId = amount <= 50 ? 'smallAudio' : (amount <= 100 ? 'mediumAudio' : 'largeAudio');
+    let audio = document.getElementById(audioId);
+    if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(() => playBeep(amount));
+    } else {
+        playBeep(amount);
+    }
+}
+
+function playBeep(amount) {
+    try {
+        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let oscillator = audioCtx.createOscillator();
+        let gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.type = 'sine';
+        oscillator.frequency.value = amount <= 50 ? 880 : (amount <= 100 ? 660 : 440);
+        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.6);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.3);
+        audioCtx.resume();
+    } catch(e) { console.log('audio not supported'); }
+}
+
+// iOS audio unlock
+document.body.addEventListener('touchstart', () => {
+    try {
+        let ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (ctx.state === 'suspended') ctx.resume();
+    } catch(e) {}
+}, { once: true });
+
 // ===== UPI Deep Link Trigger (anchor method — no history change) =====
 function triggerUPI(upiUrl) {
     showToast("Opening UPI app...");
@@ -830,5 +870,16 @@ window.addEventListener('scroll', () => {
 showPage('homePage');
 console.log("ModiPay Loaded");
 </script>
+<!-- Audio elements for payment sound -->
+<audio id="smallAudio" preload="auto">
+    <source src="https://files.catbox.moe/clvf5b.mp3" type="audio/mpeg">
+</audio>
+<audio id="mediumAudio" preload="auto">
+    <source src="https://files.catbox.moe/clvf5b.mp3" type="audio/mpeg">
+</audio>
+<audio id="largeAudio" preload="auto">
+    <source src="https://files.catbox.moe/clvf5b.mp3" type="audio/mpeg">
+</audio>
+
 </body>
 </html>
