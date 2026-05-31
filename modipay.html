@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ModiPay Ultimate • UPI & Bank Transfer</title>
+    <!-- html5-qrcode scanner library -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <!-- Font Awesome 6 (free icons) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #f5f7fb;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Main container - mobile first */
+        .app-container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0,0,0,0.05);
+            border-radius: 0;
+            overflow-x: hidden;
+        }
+
+        /* Header with gradient matching image style */
+        .header-gradient {
+            background: linear-gradient(135deg, #F97316 0%, #FF8C42 50%, #1FAA59 100%);
+            padding: 20px 20px 32px 20px;
+            border-radius: 0 0 28px 28px;
+            color: white;
+        }
+@font-face{
+    font-family: 'ModiPay';
+    src: url('/assets/modipay.ttf') format('truetype');
+}
+
+.logo-modipay{
+    font-family: 'ModiPay', sans-serif;
+    font-size: 34px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: 1px;
+
+           /* Top-Bottom 3px, Left-Right 0 */
+    padding-top: 10px;
+
+    background: #138808;    /* Green background */
+    
+}
+.modipay-tagline{
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    text-align: center;
+
+    background: #138808; /* Green */
+
+    margin: 0;
+    padding-bottom: 3px;
+    
+
+    letter-spacing: 0.3px;
+}
+
+.logo-modipay .modi{
+    color: #FF7A00; /* Saffron */
+}
+
+.logo-modipay .pay{
+    color: #ffffff; /* Green */
+}
+
+        .welcome-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .user-greeting h3 {
+            font-size: 18px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .user-greeting h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .profile-icon {
+            background: rgba(255,255,255,0.2);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 20px;
+            margin-top: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.8;
+            letter-spacing: 0.5px;
+        }
+
+        .balance-amount {
+            font-size: 36px;
+            font-weight: 800;
+            margin-top: 8px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .balance-amount span {
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        /* Section Titles */
+        .section-title {
+            padding: 24px 20px 12px 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a2c3e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #F97316;
+            font-size: 20px;
+        }
+
+        /* Feature Grid - 4 options exactly like image */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 0 16px;
+            margin-bottom: 20px;
+        }
+
+        .feature-item {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 14px 8px;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid #eef2f8;
+        }
+
+        .feature-item:active {
+            transform: scale(0.96);
+            background: #fff5e8;
+        }
+
+.feature-icon{
+    font-size: 28px;
+    margin-bottom: 8px;
+    color: #F97316;
+}
+
+.feature-icon i{
+    display: block;
+}
+
+        .feature-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Cards (Recent Activity style) */
+        .card-modern {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 40px;
+            margin: 0 16px 20px 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #edf2f7;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        /* Modal / Bottom Sheet Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-sheet {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 32px 32px 0 0;
+            padding: 28px 22px 34px;
+            animation: slideUp 0.3s ease;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #1e293b;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .input-modern {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 18px;
+            font-size: 16px;
+            background: #fefefe;
+            transition: all 0.2s;
+        }
+
+        .input-modern:focus {
+            outline: none;
+            border-color: #F97316;
+            box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+        }
+
+        .btn-pay-modal {
+            background: linear-gradient(95deg, #F97316, #FF8C42);
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 60px;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            margin-top: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-pay-modal:active {
+            transform: scale(0.97);
+        }
+
+        .close-sheet {
+            position: absolute;
+            top: 18px;
+            right: 22px;
+            background: #f1f5f9;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 30px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Scanner container */
+        .scanner-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            z-index: 1100;
+            display: none;
+            flex-direction: column;
+            padding: 50px 20px 20px;
+        }
+
+        #qr-reader {
+            width: 100%;
+            border-radius: 32px;
+            overflow: hidden;
+            margin-top: 40px;
+        }
+
+        .scan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            padding: 12px;
+        }
+
+        .close-scanner {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Bottom navigation */
+.bottom-nav{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 450px;
+    margin: 0 auto;
+
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(12px);
+
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 20px 22px;
+
+    border-top: 1px solid #edf2f7;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.02);
+
+    transition: transform 0.3s ease;
+}
+
+.bottom-nav.hide{
+    transform: translateY(100%);
+}
+
+        .nav-btn {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #94a3b8;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-btn i {
+            font-size: 22px;
+        }
+
+        .nav-btn.active {
+            color: #F97316;
+        }
+
+        .page-content {
+            padding-bottom: 80px;
+        }
+
+        /* hide pages */
+        .page {
+            display: none;
+        }
+
+        .page.active-page {
+            display: block;
+        }
+
+        /* recent activity mock */
+        .transaction-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        hr {
+            margin: 16px 0;
+            border-color: #f0eef3;
+        }
+    </style>
+</head>
+<body>
+  <div class="logo-modipay">
+    <span class="modi">Modi</span><span class="pay">Pay</span>
+</div>
+<div class="modipay-tagline">
+    Pradhan Mantri Har Ghar UPI Yojna
+</div>
+<div class="app-container">
+    <!-- Home Page (Main Dashboard) -->
+    <div id="homePage" class="page active-page">
+        <div class="header-gradient">
+            <div class="welcome-row">
+          
+                <div class="user-greeting">
+                    <h3>Welcome back,</h3>
+                    <h2>Developer Arup</h2>
+                </div>
+                <div class="profile-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+            <div class="balance-card">
+                <div class="balance-label">Total Balance</div>
+                <div class="balance-amount">
+                    ₹ 48,250 <span>INR</span>
+                </div>
+                <div style="font-size:12px; margin-top:12px; opacity:0.8;">
+                    <i class="fas fa-credit-card"></i> **** 4821
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <i class="fas fa-th-large"></i> Services
+        </div>
+<div class="feature-grid">
+    <div class="feature-item" onclick="openScanQR()">
+        <div class="feature-icon">
+            <i class="fas fa-qrcode"></i>
+        </div>
+        <div class="feature-label">Scan QR</div>
+    </div>
+
+    <div class="feature-item" onclick="openPayAnyone()">
+        <div class="feature-icon">
+            <i class="fas fa-user-friends"></i>
+        </div>
+        <div class="feature-label">Pay Anyone</div>
+    </div>
+
+    <div class="feature-item" onclick="openBankTransfer()">
+        <div class="feature-icon">
+            <i class="fas fa-building-columns"></i>
+        </div>
+        <div class="feature-label">Bank Transfer</div>
+    </div>
+
+    <div class="feature-item" onclick="showBillPay()">
+        <div class="feature-icon">
+            <i class="fas fa-bolt"></i>
+        </div>
+        <div class="feature-label">Bill Pay</div>
+    </div>
+</div>
+
+        <div class="section-title">
+            <i class="fas fa-clock"></i> Recent Transactions
+        </div>
+        <div class="card-modern">
+            <div class="transaction-row">
+                <span><i class="fas fa-shopping-cart"></i> Flipkart</span>
+                <span style="color:#e53e3e;">- ₹1,299</span>
+            </div>
+            <div class="transaction-row">
+                <span><i class="fas fa-utensils"></i> Zomato</span>
+                <span style="color:#e53e3e;">- ₹450</span>
+            </div>
+            <div class="transaction-row">
+                <span><i class="fas fa-qrcode"></i> QR Payment</span>
+                <span style="color:#1FAA59;">+ ₹5,000</span>
+            </div>
+            <div class="transaction-row">
+                <span><i class="fas fa-exchange-alt"></i> Bank Transfer</span>
+                <span style="color:#e53e3e;">- ₹2,000</span>
+            </div>
+        </div>
+        <div style="height: 20px;"></div>
+    </div>
+
+    <!-- Profile Page (light) -->
+    <div id="profilePage" class="page">
+        <div class="header-gradient" style="border-radius: 0 0 28px 28px;">
+            <div class="welcome-row">
+                <div class="user-greeting">
+                    <h3>Profile</h3>
+                    <h2>My Account</h2>
+                </div>
+                <div class="profile-icon"><i class="fas fa-id-card"></i></div>
+            </div>
+        </div>
+        <div class="card-modern" style="margin-top: 24px;">
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <div style="background: #FFF2E5; width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px;">🇮🇳</div>
+                <div><h3>Developer Arup</h3><p style="color:#F97316;">developerarup@modipay</p></div>
+            </div>
+            <hr>
+            <div><i class="fas fa-mobile-alt"></i> +91 60021 48763</div>
+            <hr>
+            <div><i class="fas fa-map-marker-alt"></i> Sivasagar Assam India</div>
+            <hr>
+            <div><i class="fas fa-shield-alt"></i> KYC Verified ✅</div>
+        </div>
+        <div class="card-modern">
+    <h4>Make Your Modi Pay</h4>
+    <p style="margin-top:8px;color:#64748b;">
+        Get your own Modi Pay setup and personalized payment profile.
+    </p>
+
+    <a href="https://wa.me/916002148763" target="_blank" style="
+        display:inline-block;
+        margin-top:15px;
+        background:#0e7600;
+        color:white;
+        text-decoration:none;
+        padding:12px 24px;
+        border-radius:50px;
+        font-weight:700;
+    ">
+        Make Now
+    </a>
+</div>
+        <div class="card-modern">
+            <h4>UPI Settings</h4>
+            <p>Default Payment Method: UPI / Bank</p>
+            <p>Auto-pay Mandates: 0</p>
+        </div>
+    </div>
+
+    <!-- SCANNER MODAL (fullscreen) -->
+    <div id="scannerModal" class="scanner-container">
+        <div class="scan-header">
+            <h3 style="color:white;"><i class="fas fa-qrcode"></i> Scan QR Code</h3>
+            <button class="close-scanner" onclick="closeScannerModal()"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div id="qr-reader" style="width:100%; background:black; border-radius: 28px;"></div>
+        <p style="color:white; text-align:center; margin-top: 24px;">Place QR code inside the frame</p>
+    </div>
+
+    <!-- Pay Anyone Modal (UPI ID / Mobile) -->
+    <div id="payAnyoneModal" class="modal-overlay">
+        <div class="modal-sheet">
+            <button class="close-sheet" onclick="closeModal('payAnyoneModal')">✕</button>
+            <div class="modal-title"><i class="fas fa-user-friends"></i> Pay Anyone</div>
+            <div class="input-group">
+                <label>UPI ID or Mobile Number</label>
+                <input type="text" id="payAnyoneId" class="input-modern" placeholder="e.g. 9876543210 or name@bank">
+            </div>
+            <div class="input-group">
+                <label>Amount (₹)</label>
+                <input type="number" id="payAnyoneAmount" class="input-modern" placeholder="Enter amount">
+            </div>
+            <div class="input-group">
+                <label>Remark (Optional)</label>
+                <input type="text" id="payAnyoneRemark" class="input-modern" placeholder="For dinner, etc">
+            </div>
+            <button class="btn-pay-modal" onclick="processPayAnyone()">Proceed to Pay</button>
+        </div>
+    </div>
+
+    <!-- Bank Transfer Modal (Account Number, IFSC, Holder) -->
+    <div id="bankTransferModal" class="modal-overlay">
+        <div class="modal-sheet">
+            <button class="close-sheet" onclick="closeModal('bankTransferModal')">✕</button>
+            <div class="modal-title"><i class="fas fa-university"></i> Bank Transfer (NEFT/IMPS)</div>
+            <div class="input-group">
+                <label>Account Holder Name</label>
+                <input type="text" id="bankHolderName" class="input-modern" placeholder="Full name">
+            </div>
+            <div class="input-group">
+                <label>Account Number</label>
+                <input type="text" id="bankAccountNo" class="input-modern" placeholder="XXXXXXXXXX">
+            </div>
+            <div class="input-group">
+                <label>IFSC Code</label>
+                <input type="text" id="bankIfsc" class="input-modern" placeholder="SBIN0001234">
+            </div>
+            <div class="input-group">
+                <label>Amount (₹)</label>
+                <input type="number" id="bankAmount" class="input-modern" placeholder="Enter amount">
+            </div>
+            <button class="btn-pay-modal" onclick="processBankTransfer()">Transfer Now</button>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Navigation (Fixed) -->
+<div class="bottom-nav">
+    <button class="nav-btn" data-page="homePage"><i class="fas fa-home"></i><span>Home</span></button>
+    <button class="nav-btn" data-page="profilePage"><i class="fas fa-user"></i><span>Profile</span></button>
+</div>
+
+<script>
+    // ----- GLOBALS -----
+    let html5QrScanner = null;
+
+    // Page navigation
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active-page');
+        });
+        document.getElementById(pageId).classList.add('active-page');
+        // update bottom nav active class
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            if(btn.getAttribute('data-page') === pageId) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    // bottom nav event listeners
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const targetPage = btn.getAttribute('data-page');
+            if(targetPage) showPage(targetPage);
+        });
+    });
+
+    // ---- QR SCANNER LOGIC (using html5-qrcode) ----
+    async function openScanQR() {
+        const scannerDiv = document.getElementById('scannerModal');
+        scannerDiv.style.display = 'flex';
+        // initialize scanner
+        if (!html5QrScanner) {
+            const readerElem = document.getElementById('qr-reader');
+            readerElem.innerHTML = ""; // clear
+            html5QrScanner = new Html5Qrcode("qr-reader");
+            try {
+                await html5QrScanner.start(
+                    { facingMode: "environment" },
+                    { fps: 10, qrbox: { width: 280, height: 280 } },
+                    (decodedText) => {
+                        // on successful scan
+                        if (decodedText && decodedText.includes("upi://pay")) {
+                            handleUpiQr(decodedText);
+                            closeScannerModal();
+                        } else if (decodedText && (decodedText.includes("@") || decodedText.match(/^\d{10,}$/))) {
+                            // some qr might contain plain upi id or number
+                            let upiIdOrNumber = decodedText.trim();
+                            openCustomPayWithUpi(upiIdOrNumber);
+                            closeScannerModal();
+                        } else {
+                            alert("Scanned data not a valid UPI QR. Please scan UPI QR code.");
+                        }
+                    },
+                    (errorMsg) => {
+                        // silent ignore
+                    }
+                );
+            } catch(err) {
+                alert("Camera access required to scan QR.");
+                closeScannerModal();
+            }
+        } else {
+            try {
+                await html5QrScanner.start();
+            } catch(e) { alert("Restart camera failed"); }
+        }
+    }
+
+    function closeScannerModal() {
+        const modal = document.getElementById('scannerModal');
+        modal.style.display = 'none';
+        if (html5QrScanner) {
+            html5QrScanner.stop().catch(err=>console.warn);
+        }
+    }
+
+    // handle upi qr redirect
+    function handleUpiQr(upiUrl) {
+        // extract pa and pn if possible, but we can redirect directly
+        try {
+            let urlObj = new URL(upiUrl);
+            let params = new URLSearchParams(urlObj.search);
+            let pa = params.get("pa") || "";
+            let pn = params.get("pn") || "Merchant";
+            let amount = params.get("am") || "";
+            if(pa) {
+                let redirectUrl = `upi://pay?pa=${encodeURIComponent(pa)}&pn=${encodeURIComponent(pn)}&cu=INR`;
+                if(amount) redirectUrl += `&am=${amount}`;
+                window.location.href = redirectUrl;
+            } else {
+                window.location.href = upiUrl;
+            }
+        } catch(e) {
+            window.location.href = upiUrl;
+        }
+    }
+
+    function openCustomPayWithUpi(upiId) {
+        let amount = prompt("Enter amount (₹)", "100");
+        if(amount && !isNaN(amount) && parseFloat(amount) > 0) {
+            let redirectUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=User&am=${amount}&cu=INR`;
+            window.location.href = redirectUrl;
+        } else if(amount) alert("Invalid amount");
+    }
+
+    // ---- PAY ANYONE (UPI ID or Mobile Number) ----
+    function openPayAnyone() {
+        document.getElementById('payAnyoneModal').style.display = 'flex';
+    }
+
+    function processPayAnyone() {
+        let payee = document.getElementById('payAnyoneId').value.trim();
+        let amount = document.getElementById('payAnyoneAmount').value.trim();
+        let remark = document.getElementById('payAnyoneRemark').value.trim();
+
+        if(!payee) {
+            alert("Please enter UPI ID or mobile number");
+            return;
+        }
+        if(!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+            alert("Enter valid amount");
+            return;
+        }
+        // if mobile number, convert to upi format? we'll use as payee address
+        let upiAddress = payee;
+        if(/^\d{10}$/.test(payee)) {
+            upiAddress = payee + "@okhdfcbank"; // fallback default but most bank supports
+        }
+        let redirectUrl = `upi://pay?pa=${encodeURIComponent(upiAddress)}&pn=Recipient&am=${amount}&cu=INR&tn=${encodeURIComponent(remark)}`;
+        window.location.href = redirectUrl;
+        closeModal('payAnyoneModal');
+        // clear fields after small delay
+        setTimeout(() => {
+            document.getElementById('payAnyoneId').value = '';
+            document.getElementById('payAnyoneAmount').value = '';
+            document.getElementById('payAnyoneRemark').value = '';
+        }, 500);
+    }
+
+    // ---- BANK TRANSFER (redirect to bank app / upi intent fallback) ----
+    function openBankTransfer() {
+        document.getElementById('bankTransferModal').style.display = 'flex';
+    }
+
+    function processBankTransfer() {
+        let holder = document.getElementById('bankHolderName').value.trim();
+        let account = document.getElementById('bankAccountNo').value.trim();
+        let ifsc = document.getElementById('bankIfsc').value.trim();
+        let amount = document.getElementById('bankAmount').value.trim();
+
+        if(!holder || !account || !ifsc) {
+            alert("Please fill all bank details: Account holder, Account number, IFSC");
+            return;
+        }
+        if(!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+            alert("Enter valid amount");
+            return;
+        }
+        // Since native UPI doesn't support bank transfer directly, we construct a UPI intent with bank account?
+        // We'll use a standard UPI intent that supports bank account transfer using "pa" as virtual address? But best use NPCI's "payto" 
+        // Actually for Bank Account transfer we can use following intent: 
+        // upi://pay?pa=bankAcNumber@bankname&pn=HolderName&am=XXX&cu=INR&mode=04&org=ICIC
+        // Simpler: Create a UPI URL with payee as bank account but dynamic; many banks support pay using account number@bank_ifsc
+        // Use standard approach: Some upi apps support 'paya' param. But we'll create a standard upi://pay with pa= (Account+IFSC) if we create virtual.
+        // For demo, we use UPI intent with "account@bank" format. I'll use "AC"+account+"@"+ifsc.slice(0,4)+"bank" (simplified)
+        let bankUpiId = `${account}@${ifsc.slice(0,4)}bank`;
+        let redirectUrl = `upi://pay?pa=${encodeURIComponent(bankUpiId)}&pn=${encodeURIComponent(holder)}&am=${amount}&cu=INR&mode=04`;
+        window.location.href = redirectUrl;
+        closeModal('bankTransferModal');
+        setTimeout(() => {
+            document.getElementById('bankHolderName').value = '';
+            document.getElementById('bankAccountNo').value = '';
+            document.getElementById('bankIfsc').value = '';
+            document.getElementById('bankAmount').value = '';
+        }, 300);
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    function showBillPay() {
+        alert("Bill Payment Feature: Pay electricity, water, mobile recharge coming soon! Use Scan QR or Pay Anyone.");
+    }
+
+    // Overlay click to close modals
+    window.onclick = function(event) {
+        const modals = ['payAnyoneModal', 'bankTransferModal'];
+        modals.forEach(id => {
+            let modal = document.getElementById(id);
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        if(event.target === document.getElementById('scannerModal')) {
+            closeScannerModal();
+        }
+    }
+
+    // ensure scanner modal cleanup
+    window.addEventListener('beforeunload', () => {
+        if(html5QrScanner) html5QrScanner.stop().catch(e=>{});
+    });
+    
+    // Default show home on load
+    showPage('homePage');
+    console.log("ModiPay Ultimate with Pay Anyone & Bank Transfer activated");
+    let lastScrollTop = 0;
+const bottomNav = document.querySelector('.bottom-nav');
+
+window.addEventListener('scroll', function () {
+    let currentScroll =
+        window.pageYOffset || document.documentElement.scrollTop;
+
+    if (currentScroll > lastScrollTop && currentScroll > 50) {
+        // Scroll Down
+        bottomNav.classList.add('hide');
+    } else {
+        // Scroll Up
+        bottomNav.classList.remove('hide');
+    }
+
+    lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+});
+</script>
+</body>
+</html>
