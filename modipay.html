@@ -652,11 +652,8 @@ function processQRPayment() {
         upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(pendingQrData.merchantName)}&am=${amount}&cu=INR`;
     }
 
-    // Play sound based on amount
-    playPaymentSound(parseFloat(amount));
-
     closeModal('qrPaymentModal');
-    setTimeout(() => triggerUPI(upiUrl), 200);
+    setTimeout(() => { window.location.href = upiUrl; }, 200);
 }
 
 // QR Scanner
@@ -739,7 +736,7 @@ function processPayAnyone() {
     if (/^\d{10}$/.test(payee)) upiAddress = payee + "@okhdfcbank";
 
     let redirectUrl = `upi://pay?pa=${encodeURIComponent(upiAddress)}&pn=Recipient&am=${amount}&cu=INR&tn=${encodeURIComponent(remark)}`;
-    triggerUPI(redirectUrl);
+    window.location.href = redirectUrl;
     closeModal('payAnyoneModal');
 }
 
@@ -759,7 +756,7 @@ function processBankTransfer() {
 
     let bankUpiId = `${account}@${ifsc.slice(0,4)}bank`;
     let redirectUrl = `upi://pay?pa=${encodeURIComponent(bankUpiId)}&pn=${encodeURIComponent(holder)}&am=${amount}&cu=INR&mode=04`;
-    triggerUPI(redirectUrl);
+    window.location.href = redirectUrl;
     closeModal('bankTransferModal');
 }
 
@@ -787,76 +784,6 @@ window.addEventListener('beforeunload', async () => {
     }
 });
 
-// ===== Payment Sound =====
-function playPaymentSound(amount) {
-    let audioId = amount <= 50 ? 'smallAudio' : (amount <= 100 ? 'mediumAudio' : 'largeAudio');
-    let audio = document.getElementById(audioId);
-    if (audio) {
-        audio.currentTime = 0;
-        audio.play().catch(() => playBeep(amount));
-    } else {
-        playBeep(amount);
-    }
-}
-
-function playBeep(amount) {
-    try {
-        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let oscillator = audioCtx.createOscillator();
-        let gainNode = audioCtx.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        oscillator.type = 'sine';
-        oscillator.frequency.value = amount <= 50 ? 880 : (amount <= 100 ? 660 : 440);
-        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.6);
-        oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.3);
-        audioCtx.resume();
-    } catch(e) { console.log('audio not supported'); }
-}
-
-// iOS audio unlock
-document.body.addEventListener('touchstart', () => {
-    try {
-        let ctx = new (window.AudioContext || window.webkitAudioContext)();
-        if (ctx.state === 'suspended') ctx.resume();
-    } catch(e) {}
-}, { once: true });
-
-// ===== UPI Deep Link Trigger (iframe method — page stays, no back) =====
-function triggerUPI(upiUrl) {
-    showToast("Opening UPI app...");
-    if (navigator.vibrate) navigator.vibrate(50);
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = upiUrl;
-    document.body.appendChild(iframe);
-    setTimeout(() => { if (document.body.contains(iframe)) document.body.removeChild(iframe); }, 2000);
-}
-
-// Toast notification
-function showToast(msg) {
-    let existing = document.getElementById('upiToast');
-    if (existing) existing.remove();
-    const toast = document.createElement('div');
-    toast.id = 'upiToast';
-    toast.style.cssText = `
-        position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-        background: #1e293b; color: white; padding: 12px 24px;
-        border-radius: 40px; font-size: 14px; font-weight: 600;
-        z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        display: flex; align-items: center; gap: 8px;
-        animation: toastIn 0.3s ease;
-    `;
-    toast.innerHTML = `<i class="fas fa-arrow-up-right-from-square"></i> ${msg}`;
-    document.body.appendChild(toast);
-    const style = document.createElement('style');
-    style.textContent = `@keyframes toastIn { from { opacity:0; transform: translateX(-50%) translateY(10px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }`;
-    document.head.appendChild(style);
-    setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 2500);
-}
-
 // Bottom Nav Hide/Show on scroll
 let lastScrollTop = 0;
 const bottomNav = document.querySelector('.bottom-nav');
@@ -870,16 +797,5 @@ window.addEventListener('scroll', () => {
 showPage('homePage');
 console.log("ModiPay Loaded");
 </script>
-<!-- Audio elements for payment sound -->
-<audio id="smallAudio" preload="auto">
-    <source src="https://files.catbox.moe/clvf5b.mp3" type="audio/mpeg">
-</audio>
-<audio id="mediumAudio" preload="auto">
-    <source src="https://files.catbox.moe/clvf5b.mp3" type="audio/mpeg">
-</audio>
-<audio id="largeAudio" preload="auto">
-    <source src="https://files.catbox.moe/clvf5b.mp3" type="audio/mpeg">
-</audio>
-
 </body>
 </html>
