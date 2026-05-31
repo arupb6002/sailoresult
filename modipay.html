@@ -386,7 +386,7 @@
             </div>
             <div class="balance-card">
                 <div class="balance-label">Total Balance</div>
-                <div class="balance-amount">₹ 48,250 <span>INR</span></div>
+                <div class="balance-amount">₹ 8,250 <span>INR</span></div>
                 <div style="font-size:12px; margin-top:12px; opacity:0.8;">
                     <i class="fas fa-credit-card"></i> **** 4821
                 </div>
@@ -652,8 +652,8 @@ function processQRPayment() {
         upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(pendingQrData.merchantName)}&am=${amount}&cu=INR`;
     }
 
-    triggerUPI(upiUrl);
     closeModal('qrPaymentModal');
+    setTimeout(() => { window.location.href = upiUrl; }, 200);
 }
 
 // QR Scanner
@@ -736,7 +736,7 @@ function processPayAnyone() {
     if (/^\d{10}$/.test(payee)) upiAddress = payee + "@okhdfcbank";
 
     let redirectUrl = `upi://pay?pa=${encodeURIComponent(upiAddress)}&pn=Recipient&am=${amount}&cu=INR&tn=${encodeURIComponent(remark)}`;
-    triggerUPI(redirectUrl);
+    window.location.href = redirectUrl;
     closeModal('payAnyoneModal');
 }
 
@@ -756,7 +756,7 @@ function processBankTransfer() {
 
     let bankUpiId = `${account}@${ifsc.slice(0,4)}bank`;
     let redirectUrl = `upi://pay?pa=${encodeURIComponent(bankUpiId)}&pn=${encodeURIComponent(holder)}&am=${amount}&cu=INR&mode=04`;
-    triggerUPI(redirectUrl);
+    window.location.href = redirectUrl;
     closeModal('bankTransferModal');
 }
 
@@ -783,44 +783,6 @@ window.addEventListener('beforeunload', async () => {
         try { await html5QrScanner.stop(); await html5QrScanner.clear(); } catch (e) {}
     }
 });
-
-// ===== UPI Deep Link Trigger =====
-function triggerUPI(upiUrl) {
-    showToast("Opening UPI app...");
-    const a = document.createElement('a');
-    a.href = upiUrl;
-    a.target = '_blank';
-    a.rel = 'noreferrer';
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => { if(document.body.contains(a)) document.body.removeChild(a); }, 500);
-}
-
-// Remove any back prevention listeners - not needed with this approach
-
-
-// Toast notification
-function showToast(msg) {
-    let existing = document.getElementById('upiToast');
-    if (existing) existing.remove();
-    const toast = document.createElement('div');
-    toast.id = 'upiToast';
-    toast.style.cssText = `
-        position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-        background: #1e293b; color: white; padding: 12px 24px;
-        border-radius: 40px; font-size: 14px; font-weight: 600;
-        z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        display: flex; align-items: center; gap: 8px;
-        animation: toastIn 0.3s ease;
-    `;
-    toast.innerHTML = `<i class="fas fa-arrow-up-right-from-square"></i> ${msg}`;
-    document.body.appendChild(toast);
-    const style = document.createElement('style');
-    style.textContent = `@keyframes toastIn { from { opacity:0; transform: translateX(-50%) translateY(10px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }`;
-    document.head.appendChild(style);
-    setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 2500);
-}
 
 // Bottom Nav Hide/Show on scroll
 let lastScrollTop = 0;
